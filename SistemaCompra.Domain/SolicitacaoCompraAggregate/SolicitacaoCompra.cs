@@ -37,14 +37,11 @@ namespace SistemaCompra.Domain.SolicitacaoCompraAggregate
 
         public void RegistrarCompra(IEnumerable<Item> itens)
         {
-            
-            var list = itens.ToList();
 
-            if (!list.Any())
+            if (!itens.Any())
                 throw new BusinessRuleException("A solicitação de compra deve possuir itens!");
-          
 
-            var totalGeral = list.Sum(_ => _.Produto.Preco.Value) * list.Single().Qtde;
+            var totalGeral = itens.Sum(_ => _.Produto.Preco.Value) * itens.Single().Qtde;
 
             var money = new Money(totalGeral);
 

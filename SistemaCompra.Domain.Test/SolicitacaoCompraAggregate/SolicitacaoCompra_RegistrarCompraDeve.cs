@@ -15,9 +15,7 @@ namespace SistemaCompra.Domain.Test.SolicitacaoCompraAggregate
 
             var condicaoPagamento = new CondicaoPagamento(60);
             var solicitacao = new SolicitacaoCompra("rodrigoasth", "rodrigoasth", condicaoPagamento);
-           
 
-            
             var itens = new List<Item>();
             var produto = new Produto("Cedro", "Transversal 3/3", Categoria.Madeira.ToString(), 1001);
             itens.Add(new Item(produto, 50));
