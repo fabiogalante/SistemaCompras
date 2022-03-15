@@ -16,17 +16,18 @@ namespace SistemaCompra.Domain.SolicitacaoCompraAggregate
         public DateTime Data { get; private set; }
         public Money TotalGeral { get; private set; }
         public Situacao Situacao { get; private set; }
-        public CondicaoPagamento CondicaoPagamento { get; set; }
+        public CondicaoPagamento CondicaoPagamento { get; private set; }
 
         private SolicitacaoCompra() { }
 
-        public SolicitacaoCompra(string usuarioSolicitante, string nomeFornecedor)
+        public SolicitacaoCompra(string usuarioSolicitante, string nomeFornecedor, CondicaoPagamento condicaoPagamento)
         {
             Id = Guid.NewGuid();
             UsuarioSolicitante = new UsuarioSolicitante(usuarioSolicitante);
             NomeFornecedor = new NomeFornecedor(nomeFornecedor);
             Data = DateTime.Now;
             Situacao = Situacao.Solicitado;
+            CondicaoPagamento = condicaoPagamento;
         }
 
         public void AdicionarItem(Produto produto, int qtde)
@@ -36,16 +37,20 @@ namespace SistemaCompra.Domain.SolicitacaoCompraAggregate
 
         public void RegistrarCompra(IEnumerable<Item> itens)
         {
-            var items = itens.ToList();
+            
+            var list = itens.ToList();
 
-            if (!items.Any())
-                throw new BusinessRuleException("O total de itens de compra deve ser maior que 0");
+            if (!list.Any())
+                throw new BusinessRuleException("A solicitação de compra deve possuir itens!");
+          
 
-            var totalGeral = items.Sum(_ => _.Produto.Preco.Value);
+            var totalGeral = list.Sum(_ => _.Produto.Preco.Value) * list.Single().Qtde;
 
-            if (totalGeral > 50000)
+            var money = new Money(totalGeral);
+
+            if (money.Value > 50000)
             {
-                this.CondicaoPagamento.Valor = 30;
+                CondicaoPagamento.Valor = 30;
             }
 
         }
